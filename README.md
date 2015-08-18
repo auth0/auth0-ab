@@ -142,14 +142,14 @@ ab-1.3.7.min.js
     var experiments = ctx.experiments;
 
     // Get one experiment
-    experiment = experiments.get('experiment-1');
+    experiment = experiments.findByName('experiment-1');
 
     // Current experiment
     var currentExperiment = ctx.currentExperiment;
 
     var html = template({
-      experiments: experiments.toJSON(),
-      experiment: currentExperiment.toJSON(),
+      experiments: experiments,
+      experiment: currentExperiment,
       somethingElse: ...
     });
 
