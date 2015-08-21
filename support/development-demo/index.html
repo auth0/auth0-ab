@@ -43,16 +43,16 @@
           <div class="sidebar-box">
             <strong>Basic demos</strong>
             <ul>
-
+            <li><a href="/examples/page-mw"><i></i>Page.js Middleware</a></li>
             </ul>
             <hr />
           </div>
         </div>
         <div class="col-sm-8">
-          <div class="text-content">
-            <h1>A/B Testing</h1>
+          <div class="text-content js-main-container">
+            <h1 class="js-title">A/B Testing</h1>
 
-            <h4>This page is used to test auth0-ab</h4>
+            <h4 class="js-description">This page is used to test auth0-ab</h4>
 
             <div class="clearfix">
               <div id="login-container1" style="float: left; width: 300px; height: 500px; margin-top: 20px;"></div>
@@ -65,7 +65,11 @@
     </div>
 
     <script src="/node_modules/jquery/dist/jquery.js"></script>
+    <script src="/node_modules/page/page.js"></script>
     <script src="/auth0-ab.js"></script>
-
+    <script src="/js/main.js"></script>
+    <script src="/js/ab.js"></script>
+    <script src="/js/controllers/examples_controller.js"></script>
+    <script src="/js/routes.js"></script>
   </body>
 </html>
