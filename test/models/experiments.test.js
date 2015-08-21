@@ -1,7 +1,30 @@
 var expect = require('chai').expect;
 var Experiment = require('../../lib/models/experiment');
 var Experiments = require('../../lib/models/experiments');
+var variantFabricator = require('../fabricators/variant_fabricator');
 var _ = require('lodash');
+var sinon = require('sinon');
+
+
+function sharedExamplesForRunAll() {
+  it('runs the specified experiments', function() {
+    this.expectedRun.forEach(function(experiment){
+      expect(experiment.run.called).to.equal(true);
+    }, this);
+    this.expectedNotRun.forEach(function(experiment){
+      expect(experiment.run.called).to.equal(false);
+    }, this);
+  });
+
+  it('returns experiments collection containing only the ones that have been run', function() {
+    this.expectedRun.forEach(function(experiment){
+      expect(this.result.findByName(experiment.name)).to.equal(experiment);
+    }, this);
+    this.expectedNotRun.forEach(function(experiment){
+      expect(this.result.findByName(experiment.name)).to.equal(undefined);
+    }, this);
+  });
+}
 
 describe('Experiments', function() {
 
@@ -14,12 +37,17 @@ describe('Experiments', function() {
       {
         name: 'experiment-2',
         variants: []
+      },
+      {
+        name: 'experiment-3',
+        variants: []
       }
     ];
 
     this.experimentsArray = [
       new Experiment(this.experimentsData[0]),
-      new Experiment(this.experimentsData[1])
+      new Experiment(this.experimentsData[1]),
+      new Experiment(this.experimentsData[2])
     ];
 
     this.experimentsCollection = new Experiments({ experiments: this.experimentsArray });
@@ -34,6 +62,7 @@ describe('Experiments', function() {
     it('contains all the experiments', function() {
       expect(this.result.experiments[0].name).to.equal('experiment-1')
       expect(this.result.experiments[1].name).to.equal('experiment-2')
+      expect(this.result.experiments[2].name).to.equal('experiment-3')
     });
   });
 
@@ -67,6 +96,57 @@ describe('Experiments', function() {
       });
     });
 
+    describe('#findAllByName', function() {
+
+      beforeEach(function() {
+        this.experimentNames = ['experiment-1', 'experiment-3'];
+        this.excluded = [ 'experiment-2' ];
+        this.result = this.experimentsCollection.findAllByName(this.experimentNames);
+      });
+
+      it('returns a new experiments collection with the requested experiments', function() {
+        this.experimentNames.forEach(function(name) {
+          expect(this.result.findByName(name)).to.equal(this.experimentsCollection.findByName(name));
+        }, this);
+      });
+
+      it('does not include not requested experiment', function() {
+        this.excluded.forEach(function(name) {
+          expect(this.result.findByName(name)).to.equal(undefined);
+        }, this);
+      });
+    });
+
+    describe('#runAll', function() {
+
+      beforeEach(function() {
+        this.experimentsArray.forEach(function(experiment) {
+          sinon.stub(experiment, 'run');
+        });
+      });
+
+      describe('when runnables are specified', function() {
+
+        beforeEach(function() {
+          this.expectedRun = [this.experimentsArray[0], this.experimentsArray[2]];
+          this.expectedNotRun = [this.experimentsArray[1]];
+          this.runnables = ['experiment-3', 'experiment-1'];
+          this.result = this.experimentsCollection.runAll(this.runnables);
+        });
+
+        sharedExamplesForRunAll();
+      });
+
+      describe('when runnable are not specified', function() {
+        beforeEach(function() {
+          this.expectedRun = [ this.experimentsArray[0], this.experimentsArray[2], this.experimentsArray[1] ];
+          this.expectedNotRun = [];
+          this.result = this.experimentsCollection.runAll();
+        });
+
+        sharedExamplesForRunAll();
+      });
+    });
   });
 
 });
