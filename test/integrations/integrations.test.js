@@ -1,6 +1,6 @@
 var expect = require('chai').expect;
 var Integrations = require('../../lib/integrations/integrations');
-var Experiments = require('../../lib/models/experiments');
+var Auth0AB = require('../../lib/auth0_ab');
 var _ = require('lodash');
 var experimentFabricator = require('../fabricators/experiment_fabricator');
 
@@ -96,13 +96,13 @@ describe('Integrations', function() {
 
   describe('#build', function() {
     beforeEach(function() {
-      this.experiments = new Experiments();
+      this.auth0ab = new Auth0AB();
     });
 
     describe('when integration is defined', function() {
       beforeEach(function() {
         this.integrations.add('example', IntegrationExample);
-        this.built = this.integrations.build('example', this.experiments);
+        this.built = this.integrations.build('example', this.auth0ab);
       });
 
       it('returns an instance of the integration', function() {
@@ -115,7 +115,7 @@ describe('Integrations', function() {
 
       it('throws an exception', function() {
         expect(_.bind(function() {
-          this.integrations.build('not-existing-integration', this.experiments)
+          this.integrations.build('not-existing-integration', this.auth0ab)
         }, this)).to.throw();
       });
     });

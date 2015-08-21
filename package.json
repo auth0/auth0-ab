@@ -18,6 +18,7 @@
   "author": "Damián Andrés Fortuna - DAF (damian.andres.fortuna@gmail.com)",
   "license": "MIT",
   "dependencies": {
+    "bluebird": "^2.9.34",
     "lodash": "^3.10.0"
   },
   "devDependencies": {

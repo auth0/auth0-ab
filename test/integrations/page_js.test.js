@@ -1,5 +1,5 @@
 var expect = require('chai').expect;
-var Experiments = require('../../lib/models/experiments');
+var Auth0AB = require('../../lib/auth0_ab');
 var PageJS = require('../../lib/integrations/page_js');
 var _ = require('lodash');
 var experimentFabricator = require('../fabricators/experiment_fabricator');
@@ -22,33 +22,34 @@ function sharedExamplesForMiddleware(all) {
 describe('PageJS', function() {
 
   beforeEach(function() {
-
-    this.experimentsArray = [
-      experimentFabricator.fabricateBasic(),
-      experimentFabricator.fabricateBasic(),
+    this.experimentsAttrs = [
+      experimentFabricator.attributesBasic(),
+      experimentFabricator.attributesBasic(),
     ];
 
-    this.experimentsCollection = new Experiments({ experiments: this.experimentsArray });
-    this.integration = new PageJS({ experiments: this.experimentsCollection });
+    this.auth0ab = new Auth0AB({ experiments: this.experimentsAttrs });
+    this.experimentsArray = this.auth0ab.getExperiments().experiments;
+
+    this.integration = new PageJS({ auth0ab: this.auth0ab });
   });
 
   describe('#middleware', function() {
 
     describe('when it is called without parameters', function() {
-      beforeEach(function() {
+      beforeEach(function(done) {
         this.expectedExperimens = this.experimentsArray;
         this.notExpectedExperimens = []
         this.middleware = this.integration.middleware();
 
         this.context = {};
-        this.middleware(this.context, function() {});
+        this.middleware(this.context, done);
       });
 
       sharedExamplesForMiddleware(true);
     });
 
     describe('when middleware is called with some experiments', function(all) {
-      beforeEach(function() {
+      beforeEach(function(done) {
         this.expectedExperimens = [ this.experimentsArray[0] ]
         this.notExpectedExperimens = [ this.experimentsArray[1] ]
         this.middleware = this.integration.middleware([
@@ -56,7 +57,7 @@ describe('PageJS', function() {
         ]);
 
         this.context = {};
-        this.middleware(this.context, function() {});
+        this.middleware(this.context, done);
       });
 
       sharedExamplesForMiddleware(false);
