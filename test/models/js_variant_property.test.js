@@ -34,7 +34,7 @@ describe('JsVariantProperty', function() {
       });
     });
 
-    describe('when body is not provided', function() {
+    describe('when body and fn are not provided', function() {
 
       beforeEach(function() {
         delete this.variantPropertyData.body;
@@ -48,14 +48,32 @@ describe('JsVariantProperty', function() {
 
   describe('#runInContext', function() {
 
-    describe('when type is js', function() {
+    describe('when body is provided as an string', function() {
 
       beforeEach(function() {
-        var variantProperty = new JsVariantProperty({
+        var variantProperty = new JsVariantProperty.parse({
           name: 'p1',
           type: 'js',
           args: ['obj'],
           body: 'obj.callCount += 1;'
+        });
+
+        this.context = { callCount: 0 };
+        variantProperty.runInContext(this.context);
+      });
+
+      it('it runs the js', function() {
+        expect(this.context.callCount).to.equal(1);
+      });
+    });
+
+    describe('when body is provided as a function', function() {
+
+      beforeEach(function() {
+        var variantProperty = new JsVariantProperty.parse({
+          name: 'p1',
+          type: 'js',
+          fn: function(obj) { obj.callCount += 1; }
         });
 
         this.context = { callCount: 0 };
