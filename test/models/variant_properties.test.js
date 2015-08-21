@@ -1,5 +1,7 @@
 var expect = require('chai').expect;
 var VariantProperties = require('../../lib/models/variant_properties');
+var RawVariantProperty = require('../../lib/models/raw_variant_property');
+var JsVariantProperty = require('../../lib/models/js_variant_property');
 var variantPropertyFabricator = require('../fabricators/variant_property_fabricator');
 var _ = require('lodash');
 
@@ -36,9 +38,9 @@ describe('VariantProperties', function() {
         expect(this.result.variantProperties.length).to.equal(2);
       });
 
-      it('sets type as "raw"', function() {
-        expect(this.result.variantProperties[0].getType()).to.equal('raw');
-        expect(this.result.variantProperties[1].getType()).to.equal('raw');
+      it('creates a raw variant property', function() {
+        expect(this.result.variantProperties[0]).to.be.an.instanceOf(RawVariantProperty);
+        expect(this.result.variantProperties[1]).to.be.an.instanceOf(RawVariantProperty);
       });
 
       it('sets the primitive as value', function() {
@@ -49,11 +51,12 @@ describe('VariantProperties', function() {
 
     describe('when value is provided as an object', function() {
       beforeEach(function() {
-        this.js = 'function() { alert("hello!"); }';
+        this.body = 'alert("hello" + name + "!");';
+        this.args = ['name']
 
         this.result = VariantProperties.parse({
           variantProperties: {
-            'p1': { value: this.js, type: 'js' },
+            'p1': { body: this.body, args: this.args, type: 'js' },
             'p2': 44
           }
         });
@@ -63,14 +66,27 @@ describe('VariantProperties', function() {
         expect(this.result.variantProperties.length).to.equal(2);
       });
 
-      it('sets type according to the provided type', function() {
-        expect(this.result.variantProperties[0].getType()).to.equal('js');
-      });
-
-      it('sets #{object}.value as value', function() {
-        expect(this.result.variantProperties[0].getValue()).to.equal(this.js);
+      it('create instances according to the provided type', function() {
+        expect(this.result.variantProperties[0]).to.be.an.instanceOf(JsVariantProperty);
+        expect(this.result.variantProperties[1]).to.be.an.instanceOf(RawVariantProperty);
       });
     });
+
+
+    describe('when type is invalid for some property', function() {
+
+      it('throws an exception', function() {
+        expect(function() {
+          VariantProperties.parse({
+            variantProperties: {
+              'p1': { type: 'not-valid' },
+              'p2': 44
+            }
+          });
+        }).to.throw();
+      });
+    });
+
   });
 
   describe('#findByName', function() {

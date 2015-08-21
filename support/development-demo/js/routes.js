@@ -5,6 +5,7 @@
   var examplesController = new Auth0ABExamples.controllers.ExamplesController();
 
   page('/examples/page-mw', abMiddleware, examplesController.showPageJSMiddleware.bind(examplesController));
+  page('/examples/page-mw-with-js', abMiddleware, examplesController.showPageJSMiddlewareWithJS.bind(examplesController));
   page();
 
 })();

@@ -12,7 +12,12 @@
               weight: 1
             },
             properties: {
-              'title': 'Title on EXPERIMENT 1'
+              'title': 'Title on EXPERIMENT 1',
+              'grettings': {
+                type: 'js',
+                args: ['name'],
+                body: 'alert("Hello " + name + "! Nice to meet you! This is the variant-1")'
+              }
               //...
             }
           },
@@ -24,7 +29,12 @@
               weight: 2
             },
             properties: {
-              'title': 'Title on EXPERIMENT 2'
+              'title': 'Title on EXPERIMENT 2',
+              'grettings': {
+                type: 'js',
+                args: ['name'],
+                body: 'alert("Hello " + name + "! Great you are here again! This is the variant-2")'
+              }
               //...
             }
           }
