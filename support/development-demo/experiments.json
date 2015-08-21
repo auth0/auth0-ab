@@ -1,0 +1,39 @@
+[
+   {
+      "name":"experiment-1",
+      "variants":[
+         {
+            "name":"variant-1",
+            "settings":{
+               "weight":1
+            },
+            "properties":{
+               "title":"Title on ASYNC EXPERIMENT 1",
+               "grettings":{
+                  "type":"js",
+                  "args":[
+                     "name"
+                  ],
+                  "body":"alert(\"Hello \" + name + \"! Nice to meet you! This is the variant-1 ASYNC\")"
+               }
+            }
+         },
+         {
+            "name":"variant-2",
+            "settings":{
+               "weight":2
+            },
+            "properties":{
+               "title":"Title on ASYNC EXPERIMENT 2",
+               "grettings":{
+                  "type":"js",
+                  "args":[
+                     "name"
+                  ],
+                  "body":"alert(\"Hello \" + name + \"! Great you are here again! This is the variant-2 ASYNC\")"
+               }
+            }
+         }
+      ]
+   }
+]
