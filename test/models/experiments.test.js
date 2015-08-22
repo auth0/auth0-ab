@@ -32,22 +32,31 @@ describe('Experiments', function() {
     this.experimentsData = [
       {
         name: 'experiment-1',
-        variants: []
+        variants: [
+          variantFabricator.attributesBasic({ name: 'e1-variant-1' }),
+          variantFabricator.attributesBasic({ name: 'e1-variant-2' })
+        ]
       },
       {
         name: 'experiment-2',
-        variants: []
+        variants: [
+          variantFabricator.attributesBasic({ name: 'e2-variant-1' }),
+          variantFabricator.attributesBasic({ name: 'e2-variant-2' })
+        ]
       },
       {
         name: 'experiment-3',
-        variants: []
+        variants: [
+          variantFabricator.attributesBasic({ name: 'e3-variant-1' }),
+          variantFabricator.attributesBasic({ name: 'e3-variant-2' })
+        ]
       }
     ];
 
     this.experimentsArray = [
-      new Experiment(this.experimentsData[0]),
-      new Experiment(this.experimentsData[1]),
-      new Experiment(this.experimentsData[2])
+      Experiment.parse(this.experimentsData[0]),
+      Experiment.parse(this.experimentsData[1]),
+      Experiment.parse(this.experimentsData[2])
     ];
 
     this.experimentsCollection = new Experiments({ experiments: this.experimentsArray });
@@ -149,4 +158,25 @@ describe('Experiments', function() {
     });
   });
 
+  describe('#setCurrentVariantsByName', function() {
+
+      beforeEach(function() {
+        this.selectedVariants = {
+          'experiment-1': 'e1-variant-1',
+          'experiment-2': 'e2-variant-2'
+        };
+
+        this.experimentsCollection.setCurrentVariantsByName(this.selectedVariants)
+      });
+
+      it('sets variants for provided experiments', function() {
+        expect(this.experimentsCollection.findByName('experiment-1').getCurrentVariant().name).to.equal('e1-variant-1');
+        expect(this.experimentsCollection.findByName('experiment-2').getCurrentVariant().name).to.equal('e2-variant-2');
+      });
+
+      it('does not set variants for non-provided experiments', function() {
+        expect(this.experimentsCollection.findByName('experiment-3').getCurrentVariant()).to.be.null;
+      });
+
+  });
 });
