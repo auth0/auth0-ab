@@ -160,23 +160,36 @@ describe('Experiments', function() {
 
   describe('#setCurrentVariantsByName', function() {
 
-      beforeEach(function() {
-        this.selectedVariants = {
-          'experiment-1': 'e1-variant-1',
-          'experiment-2': 'e2-variant-2'
-        };
+    beforeEach(function() {
+      this.selectedVariants = {
+        'experiment-1': 'e1-variant-1',
+        'experiment-2': 'e2-variant-2'
+      };
 
-        this.experimentsCollection.setCurrentVariantsByName(this.selectedVariants)
-      });
+      this.experimentsCollection.setCurrentVariantsByName(this.selectedVariants)
+    });
 
-      it('sets variants for provided experiments', function() {
-        expect(this.experimentsCollection.findByName('experiment-1').getCurrentVariant().name).to.equal('e1-variant-1');
-        expect(this.experimentsCollection.findByName('experiment-2').getCurrentVariant().name).to.equal('e2-variant-2');
-      });
+    it('sets variants for provided experiments', function() {
+      expect(this.experimentsCollection.findByName('experiment-1').getCurrentVariant().name).to.equal('e1-variant-1');
+      expect(this.experimentsCollection.findByName('experiment-2').getCurrentVariant().name).to.equal('e2-variant-2');
+    });
 
-      it('does not set variants for non-provided experiments', function() {
-        expect(this.experimentsCollection.findByName('experiment-3').getCurrentVariant()).to.be.null;
-      });
+    it('does not set variants for non-provided experiments', function() {
+      expect(this.experimentsCollection.findByName('experiment-3').getCurrentVariant()).to.be.null;
+    });
 
+  });
+
+  describe('#toPlainObject', function() {
+
+    beforeEach(function() {
+      this.result = this.experimentsCollection.toPlainObject();
+    });
+
+    it('returns an array of experiments', function() {
+      this.result.forEach(function(plainExperiment, index) {
+        expect(plainExperiment.name).to.equal(this.experimentsData[index].name)
+      }, this);
+    });
   });
 });

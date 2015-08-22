@@ -173,4 +173,38 @@ describe('Experiment', function() {
       });
     });
   });
+
+  describe('#toPlainObject', function() {
+    beforeEach(function() {
+
+      this.result = this.experiment.toPlainObject();
+    })
+
+    it('returns object with name', function() {
+      expect(this.result).to.have.property('name', this.experimentData.name);
+    });
+
+    it('returns object with variants', function() {
+      expect(this.result).to.have.property('variants').and.to.be.an.array;
+    });
+
+    describe('when current variant is null', function() {
+
+      it('returns object with current variant set to null', function() {
+        expect(this.result).to.have.property('current').and.to.be.a.null;
+      });
+    });
+
+    describe('returns object with current variant', function() {
+      beforeEach(function() {
+        this.experiment.setCurrentVariantByName(this.experimentData.variants[0].name)
+        this.result = this.experiment.toPlainObject();
+      });
+
+      it('returns current variant', function() {
+        expect(this.result).to.have.property('current').and.to.be.an.object;
+      });
+    });
+
+  });
 });

@@ -65,4 +65,23 @@ describe('Variant', function() {
 
   });
 
+  describe('#toPlainObject', function() {
+
+    beforeEach(function() {
+      this.result = this.variant.toPlainObject();
+    });
+
+    it('returns an object with property name', function() {
+      expect(this.result).to.have.property('name', this.variant.name);
+    });
+
+    it('returns an object with property settings', function() {
+      expect(this.result).to.have.property('settings', this.variant.settings);
+    });
+
+    it('returns an object with the properties', function() {
+      expect(this.result).to.have.property('properties').and.to.eql(this.variant.properties.toPlainObject());
+    });
+  });
+
 });

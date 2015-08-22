@@ -75,4 +75,17 @@ describe('Variants', function() {
 
   });
 
+  describe('#toPlainObject', function() {
+
+    beforeEach(function() {
+      this.result = this.variantsCollection.toPlainObject();
+    });
+
+    it('returns an array with all properties', function() {
+      this.variantsArray.forEach(function(variant, index) {
+        expect(this.result[index]).to.eql(variant.toPlainObject());
+      }, this);
+    });
+  });
+
 });

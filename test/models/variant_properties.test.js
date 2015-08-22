@@ -112,4 +112,16 @@ describe('VariantProperties', function() {
     });
   });
 
+  describe('#toPlainObject', function() {
+
+    beforeEach(function() {
+      this.result = this.propertiesCollection.toPlainObject();
+    });
+
+    it('returns an array with all properties', function() {
+      this.variantPropertiesArray.forEach(function(property, index) {
+        expect(this.result[index]).to.eql(property.toPlainObject());
+      }, this);
+    });
+  });
 });

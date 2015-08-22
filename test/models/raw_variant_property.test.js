@@ -39,10 +39,29 @@ describe('RawVariantProperty', function() {
     });
   });
 
-  describe('.getValue', function() {
+  describe('#getValue', function() {
 
     it('returns the value', function() {
       expect(this.property.getValue()).to.equal(this.variantPropertyData.value);
+    });
+  });
+
+  describe('#toPlainObject', function() {
+
+    beforeEach(function() {
+      this.result = this.property.toPlainObject();
+    });
+
+    it('returns an object with property name', function() {
+      expect(this.result).to.have.property('name', this.property.name);
+    });
+
+    it('returns an object with property type', function() {
+      expect(this.result).to.have.property('type', 'raw');
+    });
+
+    it('returns an object with the value', function() {
+      expect(this.result).to.have.property('value', this.property.getValue());
     });
   });
 });

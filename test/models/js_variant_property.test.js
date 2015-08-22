@@ -86,4 +86,23 @@ describe('JsVariantProperty', function() {
     });
   });
 
+  describe('#toPlainObject', function() {
+
+    beforeEach(function() {
+      this.result = this.property.toPlainObject();
+    });
+
+    it('returns an object with property name', function() {
+      expect(this.result).to.have.property('name', this.property.name);
+    });
+
+    it('returns an object with property type', function() {
+      expect(this.result).to.have.property('type', 'js');
+    });
+
+    it('returns an object with the function', function() {
+      expect(this.result).to.have.property('fn').and.to.be.a.function;
+    });
+  });
+
 });
