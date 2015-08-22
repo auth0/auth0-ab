@@ -126,9 +126,7 @@ ab-1.3.7.min.js
 
 ### Example 2: Fetching experiments from an external source
 ```
-  var ab = new Auth0AB();
-
-  ab.configure({
+  var ab = new Auth0AB({
     fetchFn: function() {
       // Returns a promise with the experiments
       // Expected result example:
