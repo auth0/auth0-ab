@@ -33,7 +33,7 @@ ab-1.3.7.min.js
 ### Basic set up
 
 ```
-  var experiments = [
+  var experimentsDef = [
     {
       name: 'experiment-1',
       variants: [
@@ -76,7 +76,7 @@ ab-1.3.7.min.js
 
 ```
   var ab = new Auth0AB({
-    experiments: experiments
+    experiments: experimentsDef
   });
 
   var experiments = ab.getExperiments();
@@ -167,7 +167,9 @@ ab-1.3.7.min.js
 ### Example 3: Page.js Middleware
 
 ```
-  var ab = new Auth0AB();
+  var ab = new Auth0AB({
+    experiments: experimentsDef
+  });
   // or
   ab = new Auth0AB({
     fetchFn: function() { // See example above }
