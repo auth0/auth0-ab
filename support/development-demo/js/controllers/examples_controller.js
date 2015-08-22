@@ -2,28 +2,51 @@
   "use strict";
 
   function ExamplesController() {
-    this.$container = $('.js-main-container');
+
   }
 
   ExamplesController.prototype.showPageJSMiddleware = function(ctx) {
-    var experiment1 = ctx.experiments.findByName('experiment-1').getCurrentVariant();
+    var variantExperiment1 = ctx.experiments.findByName('experiment-1').getCurrentVariant();
 
-    this._renderBasicForVariant(experiment1);
+    var view = new Auth0ABExamples.views.VariantExampleView({
+      variant: variantExperiment1
+    });
+
+    view.render();
   };
 
   ExamplesController.prototype.showPageJSMiddlewareWithJS = function(ctx) {
-    var experiment1 = ctx.experiments.findByName('experiment-1').getCurrentVariant();
+    var variantExperiment1 = ctx.experiments.findByName('experiment-1').getCurrentVariant();
 
-    this._renderBasicForVariant(experiment1);
+    var view = new Auth0ABExamples.views.VariantExampleView({
+      variant: variantExperiment1
+    });
 
-    var name = prompt("What's your name?");
-    experiment1.getProperty('grettings').runInContext(name)
+    view.render();
+    view.runJS();
   };
 
-  ExamplesController.prototype._renderBasicForVariant = function(experiment) {
-    this.$container.find('.js-title').text(experiment.getProperty('title').getValue());
-    this.$container.find('.js-description').text('Find configuration on file --> ab.js');
-  }
+  ExamplesController.prototype.showSetCurrentVariants = function(ctx) {
+    var auth0abAsync = new Auth0AB({
+      fetchFn: function() {
+        return $.get('/experiments.json');
+      }
+    });
+
+    auth0abAsync.fetch().then(function() {
+      auth0abAsync.setCurrentVariantsByName({
+        'experiment-1': 'variant-1',
+        'experiment-2': 'variant-2'
+      });
+
+      var view = new Auth0ABExamples.views.ExperimentsExampleView({
+        experiments: auth0abAsync.getExperiments(),
+        title: 'Variants for experiments'
+      });
+
+      view.render();
+    }.bind(this));
+  };
 
   Auth0ABExamples.controllers.ExamplesController = ExamplesController;
 

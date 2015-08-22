@@ -2,7 +2,8 @@
   "use strict";
 
   global.Auth0ABExamples = {
-    controllers: {}
+    controllers: {},
+    views: {}
   };
 
 })(window);

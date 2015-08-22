@@ -11,6 +11,9 @@
 
   // Using the middleware working with async data needs the same code as sync data! The only change is in configuration!
   page('/examples/page-mw-async', abAsyncMiddleware, examplesController.showPageJSMiddlewareWithJS.bind(examplesController));
+
+  page('/examples/page-mw-externally-setting-current-variants', examplesController.showSetCurrentVariants.bind(examplesController));
+
   page();
 
 })();
