@@ -17,6 +17,15 @@ function node_bin (bin) {
   return path.join('node_modules', '.bin', bin);
 }
 
+function spaMiddleware(connect, options, middlewares) {
+  var modRewrite = require('connect-modrewrite');
+
+  // enable Angular's HTML5 mode
+  middlewares.unshift(modRewrite(['!\\.html|\\.js|\\.svg|\\.css|\\.png$ /index.html [L]']));
+
+  return middlewares;
+};
+
 module.exports = function (grunt) {
   grunt.initConfig({
     connect: {
@@ -25,7 +34,8 @@ module.exports = function (grunt) {
           // base: 'test',
           hostname: '*',
           base: ['.', 'support/development-demo', 'support/development-demo/build', 'build'],
-          port: 9999
+          port: 9999,
+          middleware: spaMiddleware
         }
       },
       demo: {
@@ -33,14 +43,7 @@ module.exports = function (grunt) {
           hostname: '*',
           base: ['support/development-demo', 'support/development-demo/build', 'build'],
           port: 3000,
-          middleware: function(connect, options, middlewares) {
-            var modRewrite = require('connect-modrewrite');
-
-            // enable Angular's HTML5 mode
-            middlewares.unshift(modRewrite(['!\\.html|\\.js|\\.svg|\\.css|\\.png$ /index.html [L]']));
-
-            return middlewares;
-          }
+          middleware: spaMiddleware
         }
       }
     },
