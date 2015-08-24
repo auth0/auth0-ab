@@ -4,6 +4,7 @@ var Experiments = require('../../lib/models/experiments');
 var variantFabricator = require('../fabricators/variant_fabricator');
 var _ = require('lodash');
 var sinon = require('sinon');
+var NullAnalyticsService = require('../../lib/services/null_analytics_service');
 
 
 function sharedExamplesForRunAll() {
@@ -54,18 +55,18 @@ describe('Experiments', function() {
     ];
 
     this.experimentsArray = [
-      Experiment.parse(this.experimentsData[0]),
-      Experiment.parse(this.experimentsData[1]),
-      Experiment.parse(this.experimentsData[2])
+      Experiment.parse(this.experimentsData[0], { analytics: new NullAnalyticsService() }),
+      Experiment.parse(this.experimentsData[1], { analytics: new NullAnalyticsService() }),
+      Experiment.parse(this.experimentsData[2], { analytics: new NullAnalyticsService() })
     ];
 
-    this.experimentsCollection = new Experiments({ experiments: this.experimentsArray });
+    this.experimentsCollection = new Experiments({ experiments: this.experimentsArray }, { analitycs: new NullAnalyticsService() });
   });
 
   describe('.parse', function() {
 
     beforeEach(function() {
-      this.result = Experiments.parse({ experiments: this.experimentsData });
+      this.result = Experiments.parse({ experiments: this.experimentsData }, { analitycs: new NullAnalyticsService() });
     });
 
     it('contains all the experiments', function() {

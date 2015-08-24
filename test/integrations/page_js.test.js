@@ -9,12 +9,12 @@ function sharedExamplesForMiddleware(all) {
   it('adds a collection with ' + (all ? 'all' : 'the specified') + ' experiments on the context', function() {
     expect(this.context).to.have.property('experiments');
 
-    this.expectedExperimens.forEach(function(experiment){
-      expect(this.context.experiments.findByName(experiment.name)).to.equal(experiment);
+    this.expectedExperimens.forEach(function(name){
+      expect(this.context.experiments.findByName(name)).to.exist;
     }, this);
 
-    this.notExpectedExperimens.forEach(function(experiment){
-      expect(this.context.experiments.findByName(experiment.name)).to.equal(undefined);
+    this.notExpectedExperimens.forEach(function(name){
+      expect(this.context.experiments.findByName(name)).to.equal(undefined);
     }, this);
   });
 }
@@ -23,12 +23,12 @@ describe('PageJS', function() {
 
   beforeEach(function() {
     this.experimentsAttrs = [
-      experimentFabricator.attributesBasic(),
-      experimentFabricator.attributesBasic(),
+      experimentFabricator.attributesBasic({ name: 'experiment-1' }),
+      experimentFabricator.attributesBasic({ name: 'experiment-2' })
     ];
 
     this.auth0ab = new Auth0AB({ experiments: this.experimentsAttrs });
-    this.experimentsArray = this.auth0ab.getExperiments().experiments;
+    this.auth0ab.start();
 
     this.integration = new PageJS({ auth0ab: this.auth0ab });
   });
@@ -37,7 +37,7 @@ describe('PageJS', function() {
 
     describe('when it is called without parameters', function() {
       beforeEach(function(done) {
-        this.expectedExperimens = this.experimentsArray;
+        this.expectedExperimens = ['experiment-1', 'experiment-2'];
         this.notExpectedExperimens = []
         this.middleware = this.integration.middleware();
 
@@ -50,10 +50,10 @@ describe('PageJS', function() {
 
     describe('when middleware is called with some experiments', function(all) {
       beforeEach(function(done) {
-        this.expectedExperimens = [ this.experimentsArray[0] ]
-        this.notExpectedExperimens = [ this.experimentsArray[1] ]
+        this.expectedExperimens = [ 'experiment-1' ]
+        this.notExpectedExperimens = [ 'experiment-2' ]
         this.middleware = this.integration.middleware([
-          this.experimentsArray[0].name
+          'experiment-1'
         ]);
 
         this.context = {};

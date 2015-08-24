@@ -2,6 +2,8 @@ var expect = require('chai').expect;
 var Experiment = require('../../lib/models/experiment');
 var _ = require('lodash');
 var experimentFabricator = require('../fabricators/experiment_fabricator');
+var NullAnalyticsService = require('../../lib/services/null_analytics_service');
+var sinon = require('sinon');
 
 describe('Experiment', function() {
 
@@ -16,7 +18,8 @@ describe('Experiment', function() {
 
     describe('when data is valid', function() {
       beforeEach(function() {
-        this.result = Experiment.parse(this.experimentData);
+        this.analytics = new NullAnalyticsService();
+        this.result = Experiment.parse(this.experimentData, { analytics: this.analytics });
       });
 
       it('returns an experiment according to data', function() {
@@ -65,11 +68,24 @@ describe('Experiment', function() {
         expect(this.result.name).to.equal(this.experimentData.variants[0].name);
       });
     });
+
+    describe('when variant is available on analytics service', function() {
+
+      beforeEach(function() {
+        sinon.stub(this.experiment.analytics, 'getCurrentVariantName').returns(this.experimentData.variants[0].name);
+        this.result = this.experiment.getCurrentVariant();
+      });
+
+      it('returns the variant', function() {
+        expect(this.result.name).to.equal(this.experimentData.variants[0].name);
+      });
+    });
   });
 
   describe('#setCurrentVariantByName', function() {
 
     beforeEach(function() {
+      this.setCurrentVariantNameStub = sinon.stub(this.experiment.analytics, 'setCurrentVariantName');
       this.experiment.setCurrentVariantByName(this.experimentData.variants[0].name);
     });
 
@@ -97,6 +113,15 @@ describe('Experiment', function() {
     describe('when name belong to some variant', function() {
       it('sets correct variant as current', function() {
         expect(this.experiment.getCurrentVariant().name).to.equal(this.experimentData.variants[0].name);
+      });
+
+      it('reports the variant to analytics', function() {
+        expect(
+          this.setCurrentVariantNameStub.calledWith(
+            this.experimentData.name,
+            this.experimentData.variants[0].name
+          )
+        ).to.be.true;
       });
     });
 
