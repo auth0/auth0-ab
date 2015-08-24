@@ -79,49 +79,52 @@ ab-1.3.7.min.js
     experiments: experimentsDef
   });
 
-  var experiments = ab.getExperiments();
+  ab.start();
 
-  // Get one experiment
-  var experiment = experiments.getByName('experiment-1');
+  ab.onReady(function() {
+    var experiments = ab.getExperiments();
 
-  console.log(experiment.properties);
-  console.log(experiment.settings);
+    // Get one experiment
+    var experiment = experiments.findByName('experiment-1');
 
-  // Run all experiments
-  experiments.runAll();
+    console.log(experiment.properties);
+    console.log(experiment.settings);
 
-  // Run all experiments with names
-  experiments.runAll(['experiment-1', ...]);
+    // Run all experiments
+    experiments.runAll();
 
-  // or run an expecific experiment
-  // Selects a variant from the experiment or returns current applicable variant (if any)
-  var variant = experiment.run();
+    // Run all experiments with names
+    experiments.runAll(['experiment-1', ...]);
 
-  // Set current variant on an specific experiment
-  experiment.setCurrentVariantByName('variant-1');
+    // or run an expecific experiment
+    // Selects a variant from the experiment or returns current applicable variant (if any)
+    var variant = experiment.run();
 
-  // Set current variant on a set of experiments
-  experiments.setCurrentVariantsByName({
-    'experiment-1': 'variant-1',
-    'experiment-2': 'variant-4',
-    // ...
-  })
+    // Set current variant on an specific experiment
+    experiment.setCurrentVariantByName('variant-1');
 
-  // Returns current applicable variant, null if none.
-  variant = experiment.getCurrentVariant();
+    // Set current variant on a set of experiments
+    experiments.setCurrentVariantsByName({
+      'experiment-1': 'variant-1',
+      'experiment-2': 'variant-4',
+      // ...
+    })
 
-  // WARNING!: This JS will be run with the same privileges as any other JS in your
-  // website, it can access cookies, global variables, monkey patch code, etc.
-  // It is extremely important to make sure that you can trust the source of it
-  //
-  // Never execute JS from a source you cannot trust.
-  variant.getProperty('grettings').runInContext({ name: 'Damian' });
+    // Returns current applicable variant, null if none.
+    variant = experiment.getCurrentVariant();
 
-  // Get plain object version of experiments / variants
-  experiments.toPlainObject()
-  experiment.toPlainObject()
-  variant.toPlainObject()
+    // WARNING!: This JS will be run with the same privileges as any other JS in your
+    // website, it can access cookies, global variables, monkey patch code, etc.
+    // It is extremely important to make sure that you can trust the source of it
+    //
+    // Never execute JS from a source you cannot trust.
+    variant.getProperty('grettings').runInContext({ name: 'Damian' });
 
+    // Get plain object version of experiments / variants
+    experiments.toPlainObject()
+    experiment.toPlainObject()
+    variant.toPlainObject()
+  });
 ```
 
 ### Example 2: Fetching experiments from an external source
@@ -156,7 +159,9 @@ ab-1.3.7.min.js
     }
   });
 
-  ab.fetch().then(function(ab) {
+  ab.start();
+
+  ab.onReady(function(ab) {
     var experiments = ab.getExperiments();
     ...
   });
@@ -172,6 +177,8 @@ ab-1.3.7.min.js
   ab = new Auth0AB({
     fetchFn: function() { // See example above }
   });
+
+  ab.start();
 
   page('some/route', ab.integration('pagejs').middleware(/* optional */['experiment-1']), function(ctx, next) {
     // Get variant
