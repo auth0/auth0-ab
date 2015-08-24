@@ -8,6 +8,7 @@ var auth0metricsFabricator = require('../fabricators/auth0_metrics_fabricator');
 var sinon = require('sinon');
 
 describe('Auth0MetricsIntegration', function() {
+  this.globals(['Auth0Metrics']);
 
   beforeEach(function() {
     this.startingData = {
@@ -25,6 +26,10 @@ describe('Auth0MetricsIntegration', function() {
     this.auth0ab = new Auth0AB({ experiments: this.experimentsAttrs });
 
     this.integration = new Auth0MetricsIntegration({ auth0ab: this.auth0ab });
+  });
+
+  after(function() {
+    delete global.Auth0Metrics;
   });
 
   describe('#start', function() {

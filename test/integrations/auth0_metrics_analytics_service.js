@@ -5,6 +5,7 @@ var auth0metricsFabricator = require('../fabricators/auth0_metrics_fabricator');
 var sinon = require('sinon');
 
 describe('Auth0MetricsAnalyticsService', function() {
+  this.globals(['Auth0Metrics']);
 
   beforeEach(function() {
     this.startingData = {
@@ -15,6 +16,10 @@ describe('Auth0MetricsAnalyticsService', function() {
     global.Auth0Metrics = auth0metricsFabricator.fabricateAuth0MetricsFake();
 
     this.service = new Auth0MetricsAnalyticsService(this.startingData);
+  });
+
+  after(function() {
+    delete global.Auth0Metrics;
   });
 
   describe('#prepare', function() {
