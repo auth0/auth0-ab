@@ -54,6 +54,23 @@
     }
   });
 
+  var auth0abAsyncMetrics = new Auth0AB({
+    fetchFn: function() {
+      return $.get('/experiments.json');
+    }
+  });
+
+  // Auth0-Metrics integegration
+  auth0abAsyncMetrics.integration('auth0metrics').start({
+    segmentKey: 'WqErZyd56ob3pmMDnko55hNgFt8B4Zox',
+    dwhEndpoint: 'https://auth0-metrics-server.herokuapp.com/dwh-metrics'
+  });
+
+  auth0ab.start();
+  auth0abAsync.start();
+  auth0abAsyncMetrics.start();
+
   Auth0ABExamples.auth0ab = auth0ab;
   Auth0ABExamples.auth0Async = auth0abAsync;
+  Auth0ABExamples.auth0abAsyncMetrics = auth0abAsyncMetrics;
 })();

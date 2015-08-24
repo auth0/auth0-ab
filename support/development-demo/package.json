@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "auth0-metrics": "^1.0.1",
     "jquery": "^2.1.4",
     "page": "^1.6.3"
   }

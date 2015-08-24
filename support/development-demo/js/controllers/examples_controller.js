@@ -26,6 +26,16 @@
     view.runJS();
   };
 
+  ExamplesController.prototype.showPageJSMiddlewareAndAuth0Metrics = function(ctx) {
+    var variantExperiment1 = ctx.experiments.findByName('experiment-1').getCurrentVariant();
+
+    var view = new Auth0ABExamples.views.VariantExampleView({
+      variant: variantExperiment1
+    });
+
+    view.render();
+  };
+
   ExamplesController.prototype.showSetCurrentVariants = function(ctx) {
     var auth0abAsync = new Auth0AB({
       fetchFn: function() {
@@ -33,7 +43,9 @@
       }
     });
 
-    auth0abAsync.fetch().then(function() {
+    auth0abAsync.start();
+
+    auth0abAsync.onReady(function() {
       auth0abAsync.setCurrentVariantsByName({
         'experiment-1': 'variant-1',
         'experiment-2': 'variant-2'
