@@ -33,7 +33,7 @@ ab-1.3.7.min.js
 ### Basic set up
 
 ```
-  var experiments = [
+  var experimentsDef = [
     {
       name: 'experiment-1',
       variants: [
@@ -47,7 +47,22 @@ ab-1.3.7.min.js
             weight: 0.5
           },
           properties: {
-            'grettings': 'function(data) { alert("Hello " + data.name); }'
+            title: 'Hello!',
+
+            // JS Attribute - Explicit function definition (recomended)
+            grettings: {
+              type: 'js',
+              fn: function(data) {
+                alert("Hello " + data.name);
+              }
+            },
+
+            // String function definition (util for server side provisioning)
+            ask: {
+              type: 'js',
+              args: ['question'],
+              body: 'return prompt(question);'
+            }
           }
         },
         ...
@@ -61,42 +76,61 @@ ab-1.3.7.min.js
 
 ```
   var ab = new Auth0AB({
-    experiments: experiments
+    experiments: experimentsDef
   });
 
-  var experiments = ab.getExperiments();
-  var experiment = experiments.getByName('experiment-1');
+  ab.start();
 
-  console.log(experiment.properties);
-  console.log(experiment.settings);
+  ab.onReady(function() {
+    var experiments = ab.getExperiments();
 
-  // Selects a variant from the experiment or returns current applicable variant (if any)
-  var variant;
+    // Get one experiment
+    var experiment = experiments.findByName('experiment-1');
 
-  variant = experiment.run();
+    console.log(experiment.properties);
+    console.log(experiment.settings);
 
-  // Returns current applicable variant, null if none.
-  variant = experiment.currentVariant();
+    // Run all experiments
+    experiments.runAll();
 
-  // WARNING!: This JS will be run with the same privileges as any other JS in your
-  // website, it can access cookies, global variables, monkey patch code, etc.
-  // It is extremely important to make sure that you can trust the source of it
-  //
-  // Never execute JS from a source you cannot trust.
-  variant.runInContext('grettings', { name: 'Damian' });
+    // Run all experiments with names
+    experiments.runAll(['experiment-1', ...]);
 
-  // or
+    // or run an expecific experiment
+    // Selects a variant from the experiment or returns current applicable variant (if any)
+    var variant = experiment.run();
 
-  variant.getProperty('grettings').runInContext({ name: 'Damian' });
+    // Set current variant on an specific experiment
+    experiment.setCurrentVariantByName('variant-1');
 
+    // Set current variant on a set of experiments
+    experiments.setCurrentVariantsByName({
+      'experiment-1': 'variant-1',
+      'experiment-2': 'variant-4',
+      // ...
+    })
+
+    // Returns current applicable variant, null if none.
+    variant = experiment.getCurrentVariant();
+
+    // WARNING!: This JS will be run with the same privileges as any other JS in your
+    // website, it can access cookies, global variables, monkey patch code, etc.
+    // It is extremely important to make sure that you can trust the source of it
+    //
+    // Never execute JS from a source you cannot trust.
+    variant.getProperty('grettings').runInContext({ name: 'Damian' });
+
+    // Get plain object version of experiments / variants
+    experiments.toPlainObject()
+    experiment.toPlainObject()
+    variant.toPlainObject()
+  });
 ```
 
 ### Example 2: Fetching experiments from an external source
 ```
-  var ab = new Auth0AB();
-
-  ab.configure({
-    fetch: function() {
+  var ab = new Auth0AB({
+    fetchFn: function() {
       // Returns a promise with the experiments
       // Expected result example:
       // [
@@ -112,7 +146,7 @@ ab-1.3.7.min.js
       //           weight: 0.5
       //         },
       //         properties: {
-      //           'grettings': 'function(data) { alert("Hello " + data.name); }'
+      //           ...
       //         }
       //       },
       //       ...
@@ -125,7 +159,10 @@ ab-1.3.7.min.js
     }
   });
 
-  ab.fetchExperiments().then(function(experiments) {
+  ab.start();
+
+  ab.onReady(function(ab) {
+    var experiments = ab.getExperiments();
     ...
   });
 ```
@@ -133,25 +170,26 @@ ab-1.3.7.min.js
 ### Example 3: Page.js Middleware
 
 ```
-  var ab = new Auth0AB();
+  var ab = new Auth0AB({
+    experiments: experimentsDef
+  });
+  // or
+  ab = new Auth0AB({
+    fetchFn: function() { // See example above }
+  });
 
-  page('some/route', ab.middleware(experiments), function(ctx, next) {
-    var experiment;
+  ab.start();
 
-    // All experimentos
-    var experiments = ctx.experiments;
-
-    // Get one experiment
-    experiment = experiments.get('experiment-1');
-
-    // Current experiment
-    var currentExperiment = ctx.currentExperiment;
+  page('some/route', ab.integration('pagejs').middleware(/* optional */['experiment-1']), function(ctx, next) {
+    // Get variant
+    var variantExperiment1 = ctx.experiments.findByName('experiment-1').getCurrentVariant();
 
     var html = template({
-      experiments: experiments.toJSON(),
-      experiment: currentExperiment.toJSON(),
+      title: variantExperiment1.getProperty('title').getValue(),
       somethingElse: ...
     });
+
+    variantExperiment1.getProperty('js-property').runInContext('This is an argument!');
 
     return container.render(html);
   });

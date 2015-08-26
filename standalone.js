@@ -12,14 +12,14 @@
 var old_define = global.define;
 global.define = undefined;
 
-var Auth0Metrics = require('./');
+var Auth0AB = require('./');
 
 //restore define
 global.define = old_define;
 
 // use amd or just throught to window object.
 if (typeof global.define == 'function' && global.define.amd) {
-  global.define('auth0-metrics', function () { return Auth0Metrics; });
+  global.define('auth0-ab', function () { return Auth0AB; });
 } else if (global) {
-  global.Auth0Metrics = Auth0Metrics;
+  global.Auth0AB = Auth0AB;
 }

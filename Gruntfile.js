@@ -17,6 +17,15 @@ function node_bin (bin) {
   return path.join('node_modules', '.bin', bin);
 }
 
+function spaMiddleware(connect, options, middlewares) {
+  var modRewrite = require('connect-modrewrite');
+
+  // enable Angular's HTML5 mode
+  middlewares.unshift(modRewrite(['!\\.html|\\.js|\\.svg|\\.css|\\.png$ /index.html [L]']));
+
+  return middlewares;
+};
+
 module.exports = function (grunt) {
   grunt.initConfig({
     connect: {
@@ -25,14 +34,16 @@ module.exports = function (grunt) {
           // base: 'test',
           hostname: '*',
           base: ['.', 'support/development-demo', 'support/development-demo/build', 'build'],
-          port: 9999
+          port: 9999,
+          middleware: spaMiddleware
         }
       },
       demo: {
         options: {
           hostname: '*',
           base: ['support/development-demo', 'support/development-demo/build', 'build'],
-          port: 3000
+          port: 3000,
+          middleware: spaMiddleware
         }
       }
     },
@@ -99,7 +110,7 @@ module.exports = function (grunt) {
         stderr: true
       },
       'test-phantom': {
-        cmd: node_bin('zuul') + ' --ui mocha-bdd --disable-tunnel --phantom 9999 -- test/models/*.js test/models/*/*.js',
+        cmd: node_bin('zuul') + ' --ui mocha-bdd --disable-tunnel --phantom 9999 -- test/models/*.js test/models/*/*.js test/*/*.js',
         stdout: true,
         stderr: true
       }
