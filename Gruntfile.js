@@ -1,4 +1,3 @@
-var fs = require('fs');
 var path = require('path');
 var pkg = require('./package');
 
@@ -24,7 +23,7 @@ function spaMiddleware(connect, options, middlewares) {
   middlewares.unshift(modRewrite(['!\\.html|\\.js|\\.svg|\\.css|\\.png$ /index.html [L]']));
 
   return middlewares;
-};
+}
 
 module.exports = function (grunt) {
   grunt.initConfig({
@@ -105,7 +104,17 @@ module.exports = function (grunt) {
         stderr: true
       },
       'test-integration': {
-        cmd: node_bin('zuul') + ' -- test/*.js',
+        cmd: node_bin('zuul') + ' -- test/integrations/*test.js',
+        stdout: true,
+        stderr: true
+      },
+      'test-services': {
+        cmd: node_bin('mocha') + ' ./test/models/ --recursive',
+        stdout: true,
+        stderr: true
+      },
+      'test-models': {
+        cmd: node_bin('mocha') + ' ./test/services/',
         stdout: true,
         stderr: true
       },
@@ -148,12 +157,12 @@ module.exports = function (grunt) {
       },
       clean: {
         files: [
-          { action: 'delete', dest: 'js/m/ab-' + pkg.version + '.js' },
-          { action: 'delete', dest: 'js/m/ab-' + pkg.version + '.min.js' },
-          { action: 'delete', dest: 'js/m/ab-' + major_version + '.js' },
-          { action: 'delete', dest: 'js/m/ab-' + major_version + '.min.js' },
-          { action: 'delete', dest: 'js/m/ab-' + minor_version + '.js' },
-          { action: 'delete', dest: 'js/m/ab-' + minor_version + '.min.js' }
+          { action: 'delete', dest: 'js/ab/ab-' + pkg.version + '.js' },
+          { action: 'delete', dest: 'js/ab/ab-' + pkg.version + '.min.js' },
+          { action: 'delete', dest: 'js/ab/ab-' + major_version + '.js' },
+          { action: 'delete', dest: 'js/ab/ab-' + major_version + '.min.js' },
+          { action: 'delete', dest: 'js/ab/ab-' + minor_version + '.js' },
+          { action: 'delete', dest: 'js/ab/ab-' + minor_version + '.min.js' }
         ]
       },
       publish: {
@@ -162,76 +171,50 @@ module.exports = function (grunt) {
             expand: true,
             cwd:    'release/',
             src:    ['**'],
-            dest:   'js/m/'
+            dest:   'js/ab/'
           }
         ]
       }
     },
-    /* Checks for outdated npm dependencies before release. */
-    outdated: {
-      release: {
-        development: false
-      }
-    },
-    /* Purge FASTLY cache. */
-    fastly: {
-      options: {
-        key:  process.env.FASTLY_KEY,
-        host: process.env.FASTLY_HOST
-      },
-      purge: {
-        options: {
-          urls: [
-            'js/m/ab-' + pkg.version + '.js',
-            'js/m/ab-' + pkg.version + '.min.js',
-            'js/m/ab-' + major_version + '.js',
-            'js/m/ab-' + major_version + '.min.js',
-            'js/m/ab-' + minor_version + '.js',
-            'js/m/ab-' + minor_version + '.min.js',
-          ]
-        },
-      },
-    },
     http: {
       purge_js: {
         options: {
-          url: process.env.CDN_ROOT + '/js/m/ab-' + pkg.version + '.js',
+          url: process.env.CDN_ROOT + '/js/ab/ab-' + pkg.version + '.js',
           method: 'DELETE'
         }
       },
       purge_js_min: {
         options: {
-          url: process.env.CDN_ROOT + '/js/m/ab-' + pkg.version + '.min.js',
+          url: process.env.CDN_ROOT + '/js/ab/ab-' + pkg.version + '.min.js',
           method: 'DELETE'
         }
       },
       purge_major_js: {
         options: {
-          url: process.env.CDN_ROOT + '/js/m/ab-' + major_version + '.js',
+          url: process.env.CDN_ROOT + '/js/ab/ab-' + major_version + '.js',
           method: 'DELETE'
         }
       },
       purge_major_js_min: {
         options: {
-          url: process.env.CDN_ROOT + '/js/m/ab-' + major_version + '.min.js',
+          url: process.env.CDN_ROOT + '/js/ab/ab-' + major_version + '.min.js',
           method: 'DELETE'
         }
       },
       purge_minor_js: {
         options: {
-          url: process.env.CDN_ROOT + '/js/m/ab-' + minor_version + '.js',
+          url: process.env.CDN_ROOT + '/js/ab/ab-' + minor_version + '.js',
           method: 'DELETE'
         }
       },
       purge_minor_js_min: {
         options: {
-          url: process.env.CDN_ROOT + '/js/m/ab-' + minor_version + '.min.js',
+          url: process.env.CDN_ROOT + '/js/ab/ab-' + minor_version + '.min.js',
           method: 'DELETE'
         }
       }
     }
   });
-
 
   // Loading dependencies
   for (var key in grunt.file.readJSON('package.json').devDependencies) {
@@ -244,7 +227,7 @@ module.exports = function (grunt) {
   grunt.registerTask('demo',          ['less:demo', 'connect:demo', 'build', 'watch']);
 
   grunt.registerTask('dev',           ['connect:test', 'build', 'watch']);
-  grunt.registerTask('integration',   ['exec:test-integration']);
+  grunt.registerTask('integration',   ['exec:test-services', 'exec:test-models', 'exec:test-integration']);
   grunt.registerTask('phantom',       ['build', 'exec:test-phantom']);
 
   grunt.registerTask('purge_cdn',     ['http:purge_js', 'http:purge_js_min', 'http:purge_major_js', 'http:purge_major_js_min', 'http:purge_minor_js', 'http:purge_minor_js_min']);
