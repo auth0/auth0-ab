@@ -22,6 +22,5 @@ release
 build/auth0-lock-*.js.map
 
 # do not include bundle
-build
 
 .idea
