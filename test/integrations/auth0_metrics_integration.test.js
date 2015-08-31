@@ -7,9 +7,10 @@ var experimentFabricator = require('../fabricators/experiment_fabricator');
 var auth0metricsFabricator = require('../fabricators/auth0_metrics_fabricator');
 var sinon = require('sinon');
 
-describe('Auth0MetricsIntegration', function() {
-  this.globals(['Auth0Metrics']);
+mocha.timeout(60000);
+mocha.globals(['Auth0Metrics']);
 
+describe('Auth0MetricsIntegration', function() {
   beforeEach(function() {
     this.startingData = {
       segmentKey: 'test',

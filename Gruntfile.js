@@ -104,7 +104,7 @@ module.exports = function (grunt) {
         stderr: true
       },
       'test-integration': {
-        cmd: node_bin('zuul') + ' -- test/integrations/*test.js',
+        cmd: node_bin('zuul') + ' -- test/**/*.test.js',
         stdout: true,
         stderr: true
       },
@@ -119,7 +119,7 @@ module.exports = function (grunt) {
         stderr: true
       },
       'test-phantom': {
-        cmd: node_bin('zuul') + ' --ui mocha-bdd --disable-tunnel --phantom 9999 -- test/models/*.js test/models/*/*.js test/*/*.js',
+        cmd: node_bin('zuul') + ' --ui mocha-bdd --disable-tunnel --phantom 9999 -- test/**/*.test.js',
         stdout: true,
         stderr: true
       }
@@ -227,7 +227,7 @@ module.exports = function (grunt) {
   grunt.registerTask('demo',          ['less:demo', 'connect:demo', 'build', 'watch']);
 
   grunt.registerTask('dev',           ['connect:test', 'build', 'watch']);
-  grunt.registerTask('integration',   ['exec:test-services', 'exec:test-models', 'exec:test-integration']);
+  grunt.registerTask('integration',   ['build', 'exec:test-integration']);
   grunt.registerTask('phantom',       ['build', 'exec:test-phantom']);
 
   grunt.registerTask('purge_cdn',     ['http:purge_js', 'http:purge_js_min', 'http:purge_major_js', 'http:purge_major_js_min', 'http:purge_minor_js', 'http:purge_minor_js_min']);
