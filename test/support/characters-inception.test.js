@@ -10,7 +10,7 @@ var minified = read(resolve(__dirname, '../../build/auth0-ab.min.js'));
 var altSpace = String.fromCharCode(160);
 var altSpaceRegex = new RegExp(altSpace, 'g');
 
-describe('build/auth0-metrics.js', function() {
+describe('build/auth0-ab.js', function() {
   it('should not have alt+space characters', function(done) {
     // they fail in chrome
     expect(altSpaceRegex.test(normal)).to.be(false);
@@ -18,7 +18,7 @@ describe('build/auth0-metrics.js', function() {
   });
 });
 
-describe('build/auth0-metrics.min.js', function() {
+describe('build/auth0-ab.min.js', function() {
   it('should not have alt+space characters', function(done) {
     // they fail in chrome
     expect(altSpaceRegex.test(minified)).to.be(false);

@@ -89,6 +89,11 @@ module.exports = function (grunt) {
         stdout: true,
         stderr: true
       },
+      'uglify-loader': {
+        cmd: node_bin('uglifyjs') + ' build/auth0-ab-loader.js  -b beautify=false,ascii_only=true > build/auth0-ab-loader.min.js',
+        stdout: true,
+        stderr: true
+      },
       'test-inception': {
         cmd: node_bin('mocha') + ' ./test/support/characters-inception.test.js',
         stdout: true,
@@ -149,6 +154,9 @@ module.exports = function (grunt) {
           { action: 'delete', dest: 'js/ab/ab-' + major_version + '.min.js' },
           { action: 'delete', dest: 'js/ab/ab-' + minor_version + '.js' },
           { action: 'delete', dest: 'js/ab/ab-' + minor_version + '.min.js' },
+          { action: 'delete', dest: 'js/ab/ab-loader-' + pkg.version + '.min.js' },
+          { action: 'delete', dest: 'js/ab/ab-loader-' + major_version + '.min.js' },
+          { action: 'delete', dest: 'js/ab/ab-loader-' + minor_version + '.min.js' },
           { action: 'delete', dest: 'js/ab/ab-loader-' + pkg.version + '.js' },
           { action: 'delete', dest: 'js/ab/ab-loader-' + major_version + '.js' },
           { action: 'delete', dest: 'js/ab/ab-loader-' + minor_version + '.js' }
@@ -204,19 +212,37 @@ module.exports = function (grunt) {
       },
       purge_loader_js: {
         options: {
-          url: process.env.CDN_ROOT + '/js/ab/ab-loader' + pkg.version + '.js',
+          url: process.env.CDN_ROOT + '/js/ab/ab-loader-' + pkg.version + '.js',
           method: 'DELETE'
         }
       },
       purge_loader_major_js: {
         options: {
-          url: process.env.CDN_ROOT + '/js/ab/ab-loader' + major_version + '.js',
+          url: process.env.CDN_ROOT + '/js/ab/ab-loader-' + major_version + '.js',
           method: 'DELETE'
         }
       },
       purge_loader_minor_js: {
         options: {
-          url: process.env.CDN_ROOT + '/js/ab/ab-loader' + minor_version + '.js',
+          url: process.env.CDN_ROOT + '/js/ab/ab-loader-' + minor_version + '.js',
+          method: 'DELETE'
+        }
+      },
+      purge_loader_js_min: {
+        options: {
+          url: process.env.CDN_ROOT + '/js/ab/ab-loader-' + pkg.version + '.min.js',
+          method: 'DELETE'
+        }
+      },
+      purge_loader_major_js_min: {
+        options: {
+          url: process.env.CDN_ROOT + '/js/ab/ab-loader-' + major_version + '.min.js',
+          method: 'DELETE'
+        }
+      },
+      purge_loader_minor_js_min: {
+        options: {
+          url: process.env.CDN_ROOT + '/js/ab/ab-loader-' + minor_version + '.min.js',
           method: 'DELETE'
         }
       }
@@ -238,10 +264,9 @@ module.exports = function (grunt) {
     if (key !== 'grunt' && key.indexOf('grunt') === 0) { grunt.loadNpmTasks(key); }
   }
 
-  grunt.registerTask('js',            ['clean:js', 'browserify:debug', 'exec:uglify']);
-  grunt.registerTask('build',         ['js', 'jsdoc']);
-
-  grunt.registerTask('demo',          ['less:demo', 'connect:demo', 'build', 'watch']);
+  grunt.registerTask('uglify',        ['exec:uglify', 'exec:uglify-loader']);
+  grunt.registerTask('js',            ['clean:js', 'browserify:debug', 'jsdoc']);
+  grunt.registerTask('build',         ['js', 'uglify']);
 
   grunt.registerTask('dev',           ['connect:test', 'less:demo', 'build', 'watch']);
 
@@ -249,7 +274,7 @@ module.exports = function (grunt) {
   grunt.registerTask('phantom',       ['build', 'exec:test-inception', 'exec:test-phantom']);
   grunt.registerTask('local',         ['build', 'exec:test-inception', 'exec:test-local']);
 
-  grunt.registerTask('purge_cdn',     ['http:purge_js', 'http:purge_js_min', 'http:purge_major_js', 'http:purge_major_js_min', 'http:purge_minor_js', 'http:purge_minor_js_min', 'purge_loader_js', 'purge_loader_major_js', 'purge_loader_minor_js']);
+  grunt.registerTask('purge_cdn',     ['http:purge_js', 'http:purge_js_min', 'http:purge_major_js', 'http:purge_major_js_min', 'http:purge_minor_js', 'http:purge_minor_js_min', 'purge_loader_js', 'purge_loader_major_js', 'purge_loader_minor_js', 'purge_loader_js_min', 'purge_loader_major_js_min', 'purge_loader_minor_js_min']);
 
   grunt.registerTask('cdn',           ['build', 'copy:release', 'aws_s3:clean', 'aws_s3:publish', 'purge_cdn']);
 };

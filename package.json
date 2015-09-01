@@ -12,7 +12,6 @@
     "test": "grunt saucelabs",
     "local": "grunt local",
     "phantom": "grunt phantom",
-    "demo": "grunt demo",
     "dev": "grunt dev",
     "build": "grunt build"
   },

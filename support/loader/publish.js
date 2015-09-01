@@ -35,7 +35,7 @@ exports.publish = function(data, opts) {
     }
 
     try {
-      fs.writeFileSync(path.join(opts.destination, "auth0-ab-testing-loader.js"), str);
+      fs.writeFileSync(path.join(opts.destination, "auth0-ab-loader.js"), str);
     } catch (err) {
       throw new Error("Can't build loader script, an error ocurred when writing the file.");
     }
