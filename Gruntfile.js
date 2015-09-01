@@ -36,14 +36,6 @@ module.exports = function (grunt) {
           port: 9999,
           middleware: spaMiddleware
         }
-      },
-      demo: {
-        options: {
-          hostname: '*',
-          base: ['support/development-demo', 'support/development-demo/build', 'build'],
-          port: 3000,
-          middleware: spaMiddleware
-        }
       }
     },
     browserify: {
@@ -83,12 +75,6 @@ module.exports = function (grunt) {
       }
     },
     copy: {
-      demo: {
-        files: {
-          'support/development-demo/auth0-ab.min.js': 'build/auth0-ab.min.js',
-          'support/development-demo/auth0-ab.js':     'build/auth0-ab.js'
-        }
-      },
       release: {
         files: [
           { expand: true, flatten: true, src: 'build/*', dest: 'release/', rename: rename_release(pkg.version) },
@@ -103,23 +89,23 @@ module.exports = function (grunt) {
         stdout: true,
         stderr: true
       },
-      'test-integration': {
+      'test-inception': {
+        cmd: node_bin('mocha') + ' ./test/support/characters-inception.test.js',
+        stdout: true,
+        stderr: true
+      },
+      'test-saucelabs': {
         cmd: node_bin('zuul') + ' -- test/**/*.test.js',
-        stdout: true,
-        stderr: true
-      },
-      'test-services': {
-        cmd: node_bin('mocha') + ' ./test/models/ --recursive',
-        stdout: true,
-        stderr: true
-      },
-      'test-models': {
-        cmd: node_bin('mocha') + ' ./test/services/',
         stdout: true,
         stderr: true
       },
       'test-phantom': {
         cmd: node_bin('zuul') + ' --ui mocha-bdd --disable-tunnel --phantom 9999 -- test/**/*.test.js',
+        stdout: true,
+        stderr: true
+      },
+      'test-local': {
+        cmd: node_bin('zuul') + ' --ui mocha-bdd --disable-tunnel --local 9999 -- test/**/*.test.js',
         stdout: true,
         stderr: true
       }
@@ -226,9 +212,11 @@ module.exports = function (grunt) {
 
   grunt.registerTask('demo',          ['less:demo', 'connect:demo', 'build', 'watch']);
 
-  grunt.registerTask('dev',           ['connect:test', 'build', 'watch']);
-  grunt.registerTask('integration',   ['build', 'exec:test-integration']);
-  grunt.registerTask('phantom',       ['build', 'exec:test-phantom']);
+  grunt.registerTask('dev',           ['connect:test', 'less:demo', 'build', 'watch']);
+
+  grunt.registerTask('saucelabs',     ['build', 'exec:test-inception', 'exec:test-saucelabs']);
+  grunt.registerTask('phantom',       ['build', 'exec:test-inception', 'exec:test-phantom']);
+  grunt.registerTask('local',         ['build', 'exec:test-inception', 'exec:test-local']);
 
   grunt.registerTask('purge_cdn',     ['http:purge_js', 'http:purge_js_min', 'http:purge_major_js', 'http:purge_major_js_min', 'http:purge_minor_js', 'http:purge_minor_js_min']);
 

@@ -9,7 +9,8 @@
     "analytics"
   ],
   "scripts": {
-    "test": "grunt integration",
+    "test": "grunt saucelabs",
+    "local": "grunt local",
     "phantom": "grunt phantom",
     "demo": "grunt demo",
     "dev": "grunt dev",
@@ -29,6 +30,7 @@
     "chai": "^3.2.0",
     "connect-modrewrite": "^0.8.2",
     "ejsify": "0.1.0",
+    "expect.js": "~0.2.0",
     "grunt": "^0.4.5",
     "grunt-autoprefixer": "~0.4.0",
     "grunt-aws-s3": "~0.9.3",
