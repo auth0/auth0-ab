@@ -274,7 +274,7 @@ module.exports = function (grunt) {
   grunt.registerTask('phantom',       ['build', 'exec:test-inception', 'exec:test-phantom']);
   grunt.registerTask('local',         ['build', 'exec:test-inception', 'exec:test-local']);
 
-  grunt.registerTask('purge_cdn',     ['http:purge_js', 'http:purge_js_min', 'http:purge_major_js', 'http:purge_major_js_min', 'http:purge_minor_js', 'http:purge_minor_js_min', 'purge_loader_js', 'purge_loader_major_js', 'purge_loader_minor_js', 'purge_loader_js_min', 'purge_loader_major_js_min', 'purge_loader_minor_js_min']);
+  grunt.registerTask('purge_cdn',     ['http:purge_js', 'http:purge_js_min', 'http:purge_major_js', 'http:purge_major_js_min', 'http:purge_minor_js', 'http:purge_minor_js_min', 'http:purge_loader_js', 'http:purge_loader_major_js', 'http:purge_loader_minor_js', 'http:purge_loader_js_min', 'http:purge_loader_major_js_min', 'http:purge_loader_minor_js_min']);
 
   grunt.registerTask('cdn',           ['build', 'copy:release', 'aws_s3:clean', 'aws_s3:publish', 'purge_cdn']);
 };
