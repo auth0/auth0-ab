@@ -60,7 +60,7 @@
     "uglify-js": "~2.4.15",
     "unreleased": "^0.0.5",
     "zuul": "^3.3.0",
-    "zuul-ngrok": "^3.0.0"
+    "zuul-ngrok": "~3.0.0"
   },
   "browserify": {
     "transform": [
