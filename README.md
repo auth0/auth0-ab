@@ -11,15 +11,17 @@ To install the dependencies, execute:
 
 
 ## Usage (local)
+
 To build and run the library locally, you can run
 `npm run dev`, that will let you include the library from http://localhost:9999/auth0-ab.js, there is an small demo to test the library in http://localhost:9999/
 
 ## Usage (deploy)
+
 To use it, you have to include the script which has been built, it is built with major, minor and fix versions to be able to granularly specify versioning. You can include either the complete or minified version.
 
 For example, for version 1.3.7, the following files will be built:
 
-```
+```bash
 ab-1.js
 ab-1.3.js
 ab-1.3.7.js
@@ -32,7 +34,7 @@ ab-1.3.7.min.js
 
 ### Basic set up
 
-```
+```javascript
   var experimentsDef = [
     {
       name: 'experiment-1',
@@ -74,7 +76,7 @@ ab-1.3.7.min.js
 
 ### Example 1
 
-```
+```javascript
   var ab = new Auth0AB({
     experiments: experimentsDef
   });
@@ -128,7 +130,8 @@ ab-1.3.7.min.js
 ```
 
 ### Example 2: Fetching experiments from an external source
-```
+
+```javascript
   var ab = new Auth0AB({
     fetchFn: function() {
       // Returns a promise with the experiments
@@ -169,7 +172,7 @@ ab-1.3.7.min.js
 
 ### Example 3: Page.js Middleware
 
-```
+```javascript
   var ab = new Auth0AB({
     experiments: experimentsDef
   });
