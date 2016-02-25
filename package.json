@@ -9,6 +9,7 @@
     "analytics"
   ],
   "scripts": {
+    "deploy": "./bin/deploy",
     "test": "grunt saucelabs",
     "local": "grunt local",
     "phantom": "grunt phantom",
