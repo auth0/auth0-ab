@@ -22,7 +22,7 @@ To build and run the library locally, you can run
 Using our CDN is the preferred solution. Just add the following line in your project's HTML head and you are done.
 
 ```html
-<script src="https://cdn.auth0.com/js/ab/1.0.2/ab.min.js"></script>
+<script src="https://cdn.auth0.com/js/ab/1.0.2/auth0-ab.min.js"></script>
 ```
 
 ## Examples
