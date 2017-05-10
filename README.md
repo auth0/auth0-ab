@@ -17,17 +17,12 @@ To build and run the library locally, you can run
 
 ## Usage (deploy)
 
-To use it, you have to include the script which has been built, it is built with major, minor and fix versions to be able to granularly specify versioning. You can include either the complete or minified version.
+### CDN
 
-For example, for version 1.3.7, the following files will be built:
+Using our CDN is the preferred solution. Just add the following line in your project's HTML head and you are done.
 
-```bash
-ab-1.js
-ab-1.3.js
-ab-1.3.7.js
-ab-1.min.js
-ab-1.3.min.js
-ab-1.3.7.min.js
+```html
+<script src="https://cdn.auth0.com/js/ab/1.0.2/ab.min.js"></script>
 ```
 
 ## Examples
