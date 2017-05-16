@@ -1,3 +1,10 @@
+## [1.0.3] - 2017-05-16
+
+### Fixed
+
+- [] Fix loader bundle url (`Ramiro Silveyra d'Avila`)
+  https://github.com/auth0/metrics/commit/d2dc0fc98c5bdce50694d43613cdd6d8ccc411d0
+
 ## [1.0.2] - 2017-05-10
 
 ### Fixed
