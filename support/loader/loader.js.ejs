@@ -28,7 +28,7 @@
     script.async = true;
     script.src = ('https:' === document.location.protocol
       ? 'https://' : 'http://')
-      + 'cdn.auth0.com/js/ab/<%= locals.majorFileName %>.min.js';
+      + 'cdn.auth0.com/js/ab/<%= locals.version %>/auth0-ab.min.js';
     script.onerror = function(){
       console.error('<%= locals.loadErrorMessage %>');
     }
